@@ -8,13 +8,17 @@ import {
   Shield, 
   Droplets, 
   User,
-  Globe
+  Globe,
+  LogIn,
+  LogOut
 } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import GlassCard from './GlassCard';
 
 const Navigation: React.FC = () => {
   const location = useLocation();
+  const { isAuthenticated, logout } = useAuth();
   const { language, setLanguage, t } = useLanguage();
 
   const navItems = [
@@ -80,6 +84,28 @@ const Navigation: React.FC = () => {
               <Globe className="w-4 h-4" />
               <span>{language === 'en' ? 'తె' : 'EN'}</span>
             </motion.button>
+
+            {isAuthenticated ? (
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={logout}
+                className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-gradient-to-r from-red-500 to-pink-500 text-white font-medium text-sm hover:shadow-lg transition-all duration-300"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Logout</span>
+              </motion.button>
+            ) : (
+              <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+                <Link
+                  to="/login"
+                  className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-gradient-to-r from-green-500 to-blue-500 text-white font-medium text-sm hover:shadow-lg transition-all duration-300"
+                >
+                  <LogIn className="w-4 h-4" />
+                  <span>Login</span>
+                </Link>
+              </motion.div>
+            )}
           </div>
         </div>
       </GlassCard>
