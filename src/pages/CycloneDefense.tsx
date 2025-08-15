@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { CloudRain, Wind, AlertTriangle, Activity } from 'lucide-react';
 import VideoBackground from '../components/VideoBackground';
 import GlassCard from '../components/GlassCard';
+import InteractiveMap from '../components/InteractiveMap';
 import { useLanguage } from '../contexts/LanguageContext';
 import { MEDIA_URLS, MOCK_DATA } from '../constants/media';
 
@@ -45,12 +46,28 @@ const CycloneDefense: React.FC = () => {
             </p>
           </motion.div>
 
+          {/* Cyclone Tracking Map */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="mb-8"
+          >
+            <GlassCard className="p-6">
+              <h3 className="text-2xl font-bold text-white mb-6 flex items-center">
+                <Activity className="w-6 h-6 mr-3 text-red-400" />
+                Live Cyclone Tracking
+              </h3>
+              <InteractiveMap showCyclones={true} />
+            </GlassCard>
+          </motion.div>
+
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Forecast Table */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
+              transition={{ delay: 0.4 }}
             >
               <GlassCard className="p-6">
                 <h3 className="text-2xl font-bold text-white mb-6 flex items-center">
@@ -99,7 +116,7 @@ const CycloneDefense: React.FC = () => {
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4 }}
+              transition={{ delay: 0.6 }}
             >
               <GlassCard className="p-6">
                 <h3 className="text-2xl font-bold text-white mb-6 flex items-center">
@@ -143,7 +160,7 @@ const CycloneDefense: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
+            transition={{ delay: 0.8 }}
             className="mt-8"
           >
             <GlassCard className="p-8">

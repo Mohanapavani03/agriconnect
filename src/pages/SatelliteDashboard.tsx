@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Satellite, TrendingUp, MapPin, Clock } from 'lucide-react';
+import { Satellite, TrendingUp, MapPin, Clock, BarChart3 } from 'lucide-react';
 import VideoBackground from '../components/VideoBackground';
 import GlassCard from '../components/GlassCard';
+import InteractiveMap from '../components/InteractiveMap';
 import { useLanguage } from '../contexts/LanguageContext';
 import { MEDIA_URLS, MOCK_DATA } from '../constants/media';
 
@@ -50,12 +51,62 @@ const SatelliteDashboard: React.FC = () => {
             </p>
           </motion.div>
 
+          <div className="grid lg:grid-cols-2 gap-8 mb-8">
+            {/* Interactive Map */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <InteractiveMap
+                selectedDistrict={selectedDistrict}
+                onDistrictSelect={setSelectedDistrict}
+              />
+            </motion.div>
+
+            {/* NDVI Details */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <GlassCard className="p-8 h-96">
+                <div className="text-center mb-8">
+                  <h2 className="text-3xl font-bold text-white mb-4">
+                    {selectedDistrict}
+                  </h2>
+                  <div className="flex items-center justify-center mb-6">
+                    <div className="text-6xl font-bold text-white mr-4">
+                      {selectedData.ndvi.toFixed(2)}
+                    </div>
+                    <div>
+                      <div className={`text-2xl font-bold ${getHealthColor(selectedData.status)}`}>
+                        {t(selectedData.status.toLowerCase())}
+                      </div>
+                      <div className="text-white/60">NDVI Score</div>
+                    </div>
+                  </div>
+
+                  {/* Progress Bar */}
+                  <div className="w-full bg-gray-700 rounded-full h-4 mb-6">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${selectedData.ndvi * 100}%` }}
+                      transition={{ duration: 1, delay: 0.6 }}
+                      className="h-4 rounded-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500"
+                    />
+                  </div>
+                </div>
+              </GlassCard>
+            </motion.div>
+          </div>
+
           <div className="grid lg:grid-cols-3 gap-8">
             {/* District Selection */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
+              transition={{ delay: 0.6 }}
             >
               <GlassCard className="p-6">
                 <h3 className="text-2xl font-bold text-white mb-6 flex items-center">
@@ -88,81 +139,34 @@ const SatelliteDashboard: React.FC = () => {
               </GlassCard>
             </motion.div>
 
-            {/* NDVI Details */}
+            {/* Status Cards */}
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="lg:col-span-2"
+              transition={{ delay: 0.8 }}
+              className="lg:col-span-2 grid md:grid-cols-3 gap-4"
             >
-              <GlassCard className="p-8">
-                <div className="text-center mb-8">
-                  <h2 className="text-3xl font-bold text-white mb-4">
-                    {selectedDistrict}
-                  </h2>
-                  <div className="flex items-center justify-center mb-6">
-                    <div className="text-6xl font-bold text-white mr-4">
-                      {selectedData.ndvi.toFixed(2)}
-                    </div>
-                    <div>
-                      <div className={`text-2xl font-bold ${getHealthColor(selectedData.status)}`}>
-                        {t(selectedData.status.toLowerCase())}
-                      </div>
-                      <div className="text-white/60">NDVI Score</div>
-                    </div>
-                  </div>
+              <GlassCard className="p-6 text-center">
+                <TrendingUp className="w-12 h-12 text-green-400 mx-auto mb-4" />
+                <div className="text-white font-semibold mb-2">Health Index</div>
+                <div className={`text-3xl font-bold ${getHealthColor(selectedData.status)}`}>
+                  {Math.round(selectedData.ndvi * 100)}%
+                </div>
+              </GlassCard>
 
-                  {/* Progress Bar */}
-                  <div className="w-full bg-gray-700 rounded-full h-4 mb-6">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${selectedData.ndvi * 100}%` }}
-                      transition={{ duration: 1, delay: 0.6 }}
-                      className="h-4 rounded-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500"
-                    />
-                  </div>
+              <GlassCard className="p-6 text-center">
+                <Satellite className="w-12 h-12 text-blue-400 mx-auto mb-4" />
+                <div className="text-white font-semibold mb-2">Data Source</div>
+                <div className="text-2xl font-bold text-blue-400">
+                  NASA MODIS
+                </div>
+              </GlassCard>
 
-                  {/* Status Cards */}
-                  <div className="grid md:grid-cols-3 gap-4">
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.8 }}
-                      className="bg-white/10 rounded-lg p-4"
-                    >
-                      <TrendingUp className="w-8 h-8 text-green-400 mx-auto mb-2" />
-                      <div className="text-white font-semibold">Health Index</div>
-                      <div className={`text-2xl font-bold ${getHealthColor(selectedData.status)}`}>
-                        {Math.round(selectedData.ndvi * 100)}%
-                      </div>
-                    </motion.div>
-
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.9 }}
-                      className="bg-white/10 rounded-lg p-4"
-                    >
-                      <Satellite className="w-8 h-8 text-blue-400 mx-auto mb-2" />
-                      <div className="text-white font-semibold">Data Source</div>
-                      <div className="text-lg font-bold text-blue-400">
-                        NASA MODIS
-                      </div>
-                    </motion.div>
-
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 1.0 }}
-                      className="bg-white/10 rounded-lg p-4"
-                    >
-                      <Clock className="w-8 h-8 text-purple-400 mx-auto mb-2" />
-                      <div className="text-white font-semibold">{t('lastUpdated')}</div>
-                      <div className="text-lg font-bold text-purple-400">
-                        2 hours ago
-                      </div>
-                    </motion.div>
-                  </div>
+              <GlassCard className="p-6 text-center">
+                <Clock className="w-12 h-12 text-purple-400 mx-auto mb-4" />
+                <div className="text-white font-semibold mb-2">{t('lastUpdated')}</div>
+                <div className="text-2xl font-bold text-purple-400">
+                  2h ago
                 </div>
               </GlassCard>
             </motion.div>
